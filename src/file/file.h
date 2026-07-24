@@ -1,5 +1,7 @@
 #pragma once
 
+#include <config/defines.h>
+
 /**
  * Definition for maximum number of characters in a file name
  */
@@ -16,7 +18,19 @@ typedef struct File {
 
     /* File content. Heap allocated */
     unsigned char *content;
+    
+    /* File size, in bytes */
+    u64 size;
 } file_t;
 
 /* Opens a file representation with its name and content */
 file_t *file_open(const char name[FILENAME_MAXSIZE]);
+
+/* Replaces the file's content by the new one */
+b8 file_edit(file_t *file, const char *new_content, u64 content_size);
+
+/* Overwrites the content of the file abstraction to the OS's filesystem abstraction */
+b8 file_save(file_t *file);
+
+/* Closes a file representation */
+void file_close(file_t *file);

@@ -1,6 +1,6 @@
 CC = clang
-CFLAGS = -Wall -Wextra -g
-LFLAGS =
+CFLAGS = -Wall -Wextra -g -Isrc
+LFLAGS = 
 
 TARGET = editor
 BUILDPATH = build
@@ -8,7 +8,7 @@ BUILDPATH = build
 SRC = $(shell find . -name "*.c")
 OBJ = $(patsubst %.c, $(BUILDPATH)/%.o, $(SRC))
 
-.PHONY: clean
+.PHONY: all run clean
 
 all: $(TARGET)
 

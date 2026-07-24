@@ -1,20 +1,36 @@
 #include "file.h"
 
-#include "../config/defines.h"
+#include <config/defines.h>
+#include <logging/logger.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 /**
- * TODO: Revision/Tests
+ * @todo: Revision/Tests
  *
  * @brief Opens an abstraction to a file which
  *        contains only the file's name and 
  *        content.
+ * @param name Path of the processed file.
+ * @warning This function assumes the file name passed
+ *          into the parameter 'name' exists.
+ * @return A pointer to the file specified by 'name' path.
  */
 file_t *file_open(const char name[FILENAME_MAXSIZE]) {
-    file_t *file = NULL;
+    /**
+     * file_t *file = NULL;
+     *                ^^^^
+     * This shit is embarassing.
+     */
+    file_t *file = malloc(sizeof(file_t));
+    if (!file) {
+        perror("malloc");
+        return NULL;
+    }
+
     memset(file, 0, sizeof(*file));
 
     /** 
@@ -23,6 +39,8 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
      * characters long.
      * 
      * TODO: Make a way of handling this possible error
+     * TODO: -> Edit: The way is obviously the heap, but I'm 
+     * still considering the possibility.
     */ 
     memcpy(file->name, name, FILENAME_MAXSIZE);
 
@@ -45,6 +63,8 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
         return NULL;
     }
 
+    file->size = file_size;
+
     /* Placing cursor back in the beginning of the file */
     rewind(f);
 
@@ -52,6 +72,7 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
     u64 bytes_read = fread(file_buffer, 1, file_size, f);
     if (bytes_read < (u64)file_size) {
         perror("fread");
+        free(file);
         fclose(f);
         return NULL;
     }
@@ -62,8 +83,93 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
     /* Closing the file */
     fclose(f);
 
+    /* Heap allocating file's content */
+    file->content = malloc((sizeof(char) * bytes_read) + 1);
+    if (!file->content) {
+        free(file);
+        perror("malloc");
+        return NULL;
+    }
+
     /* Copying read content to file content */
     memcpy(file->content, file_buffer, bytes_read);
 
     return file;
+}
+/**
+ * @brief Closes a file
+ * @param file A file pointer
+ */
+void file_close(file_t *file) {
+    if (!file) {
+        WARN("file_close: NULL FILE");
+        return;
+    }
+
+    free(file->content);
+    free(file);
+    memset(file, 0, sizeof(*file));
+}
+
+/**
+ * @brief Replaces the file's content by the 'new_content' passed in parameters.
+ * @param file A file pointer
+ * @param new_content A pointer to the new content that is placed into the file
+ * @param content_size The size of the content string
+ */
+b8 file_edit(file_t *file, const char *new_content, u64 content_size) {
+    /* Asserting for NULL pointers */
+    if (!file || !new_content) {
+        ERROR("NULL FILE OR NULL CONTENT");
+        return FALSE;
+    }
+
+    /* Reallocating new memory for the new_content */
+    unsigned char *reallokd_new = realloc(file->content, (sizeof(unsigned char) * content_size) + 1);
+    if (!reallokd_new) {
+        /**
+         * In this case, the old content of the file is preserved, 
+         * so there's no need to free it.
+         */
+        ERROR("file_edit: REALLOC CONTENT");
+        return FALSE;
+    }
+    
+    /* Overwriting old content with the new one */
+    memcpy(reallokd_new, new_content, content_size);
+
+    /* The file's content is now the new one */
+    file->content = reallokd_new;
+    file->size = content_size;
+
+    return TRUE;
+}
+/**
+ * @brief Saves the content of the file abstraction to the actual object held in the user's
+ *        filesystem.
+ * @param file A file pointer
+ */
+b8 file_save(file_t *file) {
+    /* Asserting for NULL pointers */
+    if (!file) {
+        ERROR("file_save: NULL FILE POINTER");
+        return FALSE;
+    }
+    
+    /* Open original file */
+    const char *name = (const char *)file->name;
+    FILE *f = fopen(name, "wb");
+    if (!f) {
+        ERROR("file_save: COULD NOT OPEN FILE");
+        return FALSE;
+    }
+
+    /* Write new content to original file */
+    u64 size = fwrite(file->content, sizeof(unsigned char), file->size, f);
+    if (size != file->size) {
+        ERROR("file_save: COULD NOT WRITE TO FILE");
+        return FALSE;
+    }
+    
+    return TRUE;
 }

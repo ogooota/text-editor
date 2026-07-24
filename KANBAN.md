@@ -1,7 +1,5 @@
 # Backlog
 ## Actions MVP
-`
-- Save
 - Quit
 - Move
 - Insert
@@ -11,29 +9,29 @@
 - Undo
 - Redo
 - Search
-`
 
-## Place on ready only things that have concluded dependencies, done criteria and a pre-made test
+
+## Place on ready only things that have concluded dependencies and done criteria 
 # Ready
-- Edit
 
 # In process
 - Tests
 
 # Revision
-- Open
-- Logging
-- Assertions
-
 
 # Tests
 
 
-## Block things explicitly, and register the reason and what to do about it
-# Blocked
-
 
 # Done
+- File Save
+- File Edit
+- File Open
+- Assertions
+- Logging
+
+## Block things explicitly, and register the reason and what to do about it
+# Blocked
 
 
 # --- LIMITS ---

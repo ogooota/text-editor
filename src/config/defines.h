@@ -43,6 +43,13 @@ typedef unsigned char b8;
 #endif
 
 /**
+ * Defining NULL if not defined
+ */
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
+/**
  * Asserting that all types are the correct size
  */
 STATIC_ASSERT(sizeof(u8) == 1, "Expected u8 to be 1 byte");
