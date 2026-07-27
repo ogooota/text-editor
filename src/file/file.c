@@ -9,8 +9,6 @@
 #include <stdlib.h>
 
 /**
- * @todo: Revision/Tests
- *
  * @brief Opens an abstraction to a file which
  *        contains only the file's name and 
  *        content.
@@ -59,7 +57,7 @@ struct File *file_open(const char name[FILENAME_MAXSIZE]) {
     u64 file_size = ftell(f);
     if (file_size < 0) {
         perror("ftell");
-	free(file);
+	    free(file);
         fclose(f);
         return NULL;
     }
