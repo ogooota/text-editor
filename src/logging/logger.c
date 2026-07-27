@@ -5,11 +5,23 @@
 #include <string.h>
 #include <stdarg.h>
 
+/**
+ * @brief Reports a FATAL program failure
+ * @param expr The failed expression to place in failure message
+ * @param msg  The message from the original assertion
+ * @param fname The failed expression's file name
+ * @param lines The failed expression's line
+ */
 void report_assertion_failure(const char *expr, const char *msg, const char *fname, i32 lines) {
     log_output( LOG_LEVEL_FATAL, "Assertion failure: %s, message: '%s', in file: %s, line: %d\n", 
                 expr, msg, fname, lines );
 }
 
+/**
+ * @brief Logs an output message to an error
+ * @param level The error level
+ * @param msg The error message
+ */
 void log_output(log_level_t level, const char *msg, ...) {
     const char *level_labels[] = {
       "[FATAL]: ",

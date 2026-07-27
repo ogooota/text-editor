@@ -12,7 +12,7 @@
  */
 #define FILEBUFFER_MAXSIZE 8192
 
-typedef struct File {
+struct File {
     /* File name */
     unsigned char name[FILENAME_MAXSIZE];
 
@@ -21,16 +21,16 @@ typedef struct File {
     
     /* File size, in bytes */
     u64 size;
-} file_t;
+};
 
 /* Opens a file representation with its name and content */
-file_t *file_open(const char name[FILENAME_MAXSIZE]);
+struct File *file_open(const char name[FILENAME_MAXSIZE]);
 
 /* Replaces the file's content by the new one */
-b8 file_edit(file_t *file, const char *new_content, u64 content_size);
+b8 file_edit(struct File *file, const char *new_content, u64 content_size);
 
 /* Overwrites the content of the file abstraction to the OS's filesystem abstraction */
-b8 file_save(file_t *file);
+b8 file_save(struct File *file);
 
 /* Closes a file representation */
-void file_close(file_t *file);
+void file_close(struct File *file);

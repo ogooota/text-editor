@@ -1,24 +1,21 @@
 # About the editor
-`This is a modal editor, it is made for your local terminal
+This is a modal editor, it is made for your local terminal
 and operates on one process only. For this first version it
-takes only ASCII characters.`
+takes only ASCII characters.
 
 # Editor modes
-`
 -- NORMAL -- 
 -- INSERT -- 
 -- CHAR_VISUAL -- 
 -- LINE_VISUAL -- 
 -- COMMAND_LINE -- 
--- OPERATOR_PEDING --
-`
+
 
 # Mandatory MVP commands
-`
-- Open
-- Edit
-- Save
-- Quit
+- Open OK
+- Edit OK
+- Save OK
+- Quit 
 - Move
 - Insert
 - Delete
@@ -27,7 +24,6 @@ takes only ASCII characters.`
 - Undo
 - Redo
 - Search
-`
 
 # NOT MVP
 `

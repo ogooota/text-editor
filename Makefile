@@ -5,7 +5,7 @@ LFLAGS =
 TARGET = editor
 BUILDPATH = build
 
-SRC = $(shell find . -name "*.c")
+SRC = $(shell find src -type f -name "*.c" ! -name ".#*" ! -name "*~")
 OBJ = $(patsubst %.c, $(BUILDPATH)/%.o, $(SRC))
 
 .PHONY: all run clean

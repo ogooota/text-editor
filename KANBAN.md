@@ -18,8 +18,10 @@
 - Tests
 
 # Revision
+- Editor module
 
 # Tests
+- Command module
 
 
 

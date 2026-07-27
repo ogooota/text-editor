@@ -19,13 +19,13 @@
  *          into the parameter 'name' exists.
  * @return A pointer to the file specified by 'name' path.
  */
-file_t *file_open(const char name[FILENAME_MAXSIZE]) {
+struct File *file_open(const char name[FILENAME_MAXSIZE]) {
     /**
      * file_t *file = NULL;
      *                ^^^^
      * This shit is embarassing.
      */
-    file_t *file = malloc(sizeof(file_t));
+    struct File *file = malloc(sizeof(struct File));
     if (!file) {
         perror("malloc");
         return NULL;
@@ -59,6 +59,7 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
     u64 file_size = ftell(f);
     if (file_size < 0) {
         perror("ftell");
+	free(file);
         fclose(f);
         return NULL;
     }
@@ -100,7 +101,7 @@ file_t *file_open(const char name[FILENAME_MAXSIZE]) {
  * @brief Closes a file
  * @param file A file pointer
  */
-void file_close(file_t *file) {
+void file_close(struct File *file) {
     if (!file) {
         WARN("file_close: NULL FILE");
         return;
@@ -108,7 +109,6 @@ void file_close(file_t *file) {
 
     free(file->content);
     free(file);
-    memset(file, 0, sizeof(*file));
 }
 
 /**
@@ -117,9 +117,9 @@ void file_close(file_t *file) {
  * @param new_content A pointer to the new content that is placed into the file
  * @param content_size The size of the content string
  */
-b8 file_edit(file_t *file, const char *new_content, u64 content_size) {
+b8 file_edit(struct File *file, const char *new_content, u64 content_size) {
     /* Asserting for NULL pointers */
-    if (!file || !new_content) {
+    if (!file || !new_content || content_size == 0) {
         ERROR("NULL FILE OR NULL CONTENT");
         return FALSE;
     }
@@ -149,7 +149,7 @@ b8 file_edit(file_t *file, const char *new_content, u64 content_size) {
  *        filesystem.
  * @param file A file pointer
  */
-b8 file_save(file_t *file) {
+b8 file_save(struct File *file) {
     /* Asserting for NULL pointers */
     if (!file) {
         ERROR("file_save: NULL FILE POINTER");
@@ -157,8 +157,7 @@ b8 file_save(file_t *file) {
     }
     
     /* Open original file */
-    const char *name = (const char *)file->name;
-    FILE *f = fopen(name, "wb");
+    FILE *f = fopen((const char *)file->name, "wb");
     if (!f) {
         ERROR("file_save: COULD NOT OPEN FILE");
         return FALSE;
