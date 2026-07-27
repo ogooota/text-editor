@@ -1,3 +1,4 @@
 .vscode/
-editor
+./editor
 build/
+./editor/

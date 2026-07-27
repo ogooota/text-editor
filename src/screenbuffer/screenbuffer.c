@@ -37,8 +37,8 @@ b8 screenbuffer_init(struct ScreenBuffer *sb) {
  * @param sb A screen buffer instance
  */
 void screenbuffer_destroy(struct ScreenBuffer *sb) {
-  if (!sb) return;
-  memset(sb, 0, sizeof(*sb));
+  if (!sb) 
+    return;
   free(sb->data);
 }
 
