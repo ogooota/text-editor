@@ -1,0 +1,20 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-O3",
+      "-Isrc",
+      "-c",
+      "-std=c23",
+      "-o",
+      "build/src/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/salem/c/text-editor",
+    "file": "/home/salem/c/text-editor/src/main.c",
+    "output": "/home/salem/c/text-editor/build/src/main.o"
+  }
+]

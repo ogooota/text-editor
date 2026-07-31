@@ -1,17 +1,21 @@
-#include "cursor.h"
-#include "editor_mode.h"
+#pragma once
 
-/**
- * @brief Definition for the main editor structure
- */
-struct Editor {
-  b8 running;
-  struct Cursor cursor;
-  enum EditorMode mode;
-};
+typedef enum editor_mode
+{
+  EDITOR_MODE_NORMAL = 0,
+  EDITOR_MODE_INSERT,
+  EDITOR_MODE_VISUAL_CHAR,
+  EDITOR_MODE_VISUAL_LINE
+} editor_mode;
 
-/* Starts the editor */
-b8 editor_init(struct Editor *editor);
+typedef struct editor
+{
+  bool        running;
+  bool        dirty;
+  editor_mode mode;
+} editor;
 
-/* Stops the editor */
-b8 editor_stop(struct Editor *editor);
+bool
+editor_init(editor *e);
+void
+editor_set_mode(editor_mode mode);

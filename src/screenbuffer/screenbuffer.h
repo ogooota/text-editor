@@ -1,21 +1,26 @@
 #pragma once
 
-#include <config/defines.h>
+#include <stdatomic.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-/**
- * @brief Struct that represents an abstraction of the screen
- */
-struct ScreenBuffer {
-  u16            width; /* Width of the terminal screen */
-  u16            height; /* Height of the terminal screen */
-  unsigned char *data;   /* Screen data. Mallocd with the area of the terminal */
-};
+typedef struct screen_buffer
+{
+  uint16_t       width;
+  uint16_t       height;
+  unsigned char *data;
+} screen_buffer;
 
-b8 screenbuffer_init(struct ScreenBuffer *sb);
-
-void screenbuffer_destroy(struct ScreenBuffer *sb);
-
-b8 screenbuffer_place_char(struct ScreenBuffer *sb, u16 x, u16 y, char c);
-b8 screenbuffer_clear(struct ScreenBuffer *sb, char c);
-void screenbuffer_print(struct ScreenBuffer sb);
-
+bool
+screen_buffer_init(screen_buffer *);
+void
+screen_buffer_destroy(screen_buffer *);
+void
+screen_buffer_place_char(
+    screen_buffer *,
+    int,
+    int,
+    unsigned char
+    );
+void
+screen_buffer_clear(screen_buffer *, unsigned char);
