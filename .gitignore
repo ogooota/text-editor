@@ -1,4 +1,6 @@
-.vscode/
-./editor
 build/
-./editor/
+bin/
+compile_commands.json
+.cache/
+
+
