@@ -31,10 +31,6 @@ terminal_restore(void)
     if (!raw_mode_enabled)
         return;
 
-    /*
-     * TCSAFLUSH descarta bytes de entrada que ainda não foram processados.
-     * Isso evita que teclas pressionadas no editor apareçam no shell.
-     */
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_terminal) == -1)
         perror("tcsetattr: failed to restore terminal");
 
@@ -61,58 +57,17 @@ terminal_enable_raw_mode(void)
 
     struct termios raw = original_terminal;
 
-    /*
-     * Input flags.
-     *
-     * BRKINT  - não transforma break em SIGINT.
-     * ICRNL   - não transforma Enter (\r) em newline (\n).
-     * INPCK   - desativa verificação de paridade.
-     * ISTRIP  - não remove o oitavo bit dos bytes.
-     * IXON    - desativa Ctrl+S e Ctrl+Q como controle de fluxo.
-     */
     raw.c_iflag &= (tcflag_t) ~(BRKINT |
-                               ICRNL  |
-                               INPCK  |
-                               ISTRIP |
+                               ICRNL   |
+                               INPCK   |
+                               ISTRIP  |
                                IXON);
 
-    /*
-     * Output flags.
-     *
-     * OPOST desativa transformações de saída, como converter '\n'
-     * automaticamente em "\r\n".
-     */
     raw.c_oflag &= (tcflag_t) ~OPOST;
-
-    /*
-     * Control flags.
-     *
-     * CS8 configura caracteres de 8 bits.
-     */
     raw.c_cflag |= CS8;
-
-    /*
-     * Local flags.
-     *
-     * ECHO   - não mostra as teclas pressionadas.
-     * ICANON - entrega bytes imediatamente, sem esperar Enter.
-     * IEXTEN - desativa processamento especial, como Ctrl+V.
-     *
-     * ISIG foi mantido propositalmente. Assim Ctrl+C, Ctrl+Z e Ctrl+\
-     * continuam gerando sinais.
-     */
-    raw.c_lflag &= (tcflag_t) ~(ECHO |
+    raw.c_lflag &= (tcflag_t) ~(ECHO  |
                                ICANON |
                                IEXTEN);
-
-    /*
-     * read() retorna quando:
-     *
-     * - pelo menos um byte estiver disponível; ou
-     * - passarem 100 ms sem receber nenhum byte.
-     *
-     * VTIME é medido em décimos de segundo.
-     */
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 1;
 
